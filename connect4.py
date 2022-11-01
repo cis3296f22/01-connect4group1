@@ -8,6 +8,7 @@ pygame.init()
 LIGHT_BLUE=(0,102,255)
 LIGHT_WHITE = (170, 170, 170)
 DARK_WHITE = (100, 100, 100)
+WHITE = (255,255,255)
 
 #Screen
 width = 1280
@@ -22,8 +23,11 @@ BG = pygame.image.load("Dots_BG.jpeg")
 BG = pygame.transform.scale(BG, res)
 
 #Text
+pygame.font.init()
 header_font = pygame.font.SysFont('markerfelt', 120)
 game_font = pygame.font.SysFont('arial', 35)
+rules_font = pygame.font.SysFont('freesansbold', 35)
+rules_title_font = pygame.font.SysFont('freesansbold',100)
 
 title = header_font.render('Connect  F  o  u  r', True, "white")
 #Button
@@ -59,9 +63,24 @@ def multi():
 
         pygame.display.update()
 
+
 def rules():
     while True:
-        screen.fill("white")
+        screen.fill(LIGHT_BLUE)
+
+        rulestext = rules_title_font.render("RULES",True,WHITE,LIGHT_BLUE)
+
+        text1 = rules_font.render("The rules of this game are simple. Players take turns dropping chips into the 6 by 7",True, WHITE,LIGHT_BLUE)
+        text2 = rules_font.render("grid layout and their goal to winning the game is to get four chips in a row.",True, WHITE,LIGHT_BLUE)
+        text3 = rules_font.render("Players can get four in a row in a variety of patterns: horizontally, vertically, or diagonally.",True,WHITE,LIGHT_BLUE)
+        text4 = rules_font.render("There is a possibility of a tie occurring in the game if no players get four in a row.", True, WHITE, LIGHT_BLUE)
+
+        screen.blit((rulestext),(525,80))
+
+        screen.blit(text1, (150,250))
+        screen.blit(text2, (200,280))
+        screen.blit(text3, (100,350))
+        screen.blit(text4, (150,380))
 
         pygame.display.update()
 
