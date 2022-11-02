@@ -8,6 +8,7 @@ pygame.init()
 LIGHT_BLUE=(0,102,255)
 LIGHT_WHITE = (170, 170, 170)
 DARK_WHITE = (100, 100, 100)
+WHITE = (255,255,255)
 
 #Screen
 width = 1280
@@ -17,6 +18,10 @@ screen = pygame.display.set_mode(res)
 
 BG = pygame.image.load("Dots.jpeg")
 BG = pygame.transform.scale(BG, res)
+rules_font = pygame.font.SysFont('freesansbold', 35)
+rules_title_font = pygame.font.SysFont('freesansbold',100)
+back_option = rules_font.render("Back", True, "white")
+back_hover = rules_font.render("Back", True, DARK_WHITE)
 
 #chips ratio to screen
 if width > height:
@@ -47,10 +52,46 @@ def multi():
 
 def rules():
     while True:
-        screen.fill("white")
+        for backchoice in pygame.event.get():
+            if backchoice.type == pygame.QUIT:
+                pygame.quit()
+
+            if backchoice.type == pygame.MOUSEBUTTONDOWN:
+                if back_x <= clicker[0] <= back_x + 210 and back_y <= clicker[1] <= back_y + 40:
+                    main_menu()
+
+        screen.fill(LIGHT_BLUE)
+
+        rulestext = rules_title_font.render("RULES", True, WHITE, LIGHT_BLUE)
+
+        text1 = rules_font.render(
+            "The rules of this game are simple. Players take turns dropping chips into the 6 by 7", True, WHITE,
+            LIGHT_BLUE)
+        text2 = rules_font.render("grid layout and their goal to winning the game is to get four chips in a row.", True,
+                                  WHITE, LIGHT_BLUE)
+        text3 = rules_font.render(
+            "Players can get four in a row in a variety of patterns: horizontally, vertically, or diagonally.", True,
+            WHITE, LIGHT_BLUE)
+        text4 = rules_font.render(
+            "There is a possibility of a tie occurring in the game if no players get four in a row.", True, WHITE,
+            LIGHT_BLUE)
+
+        screen.blit((rulestext), (530, 80))
+
+        screen.blit(text1, (130, 250))
+        screen.blit(text2, (180, 280))
+        screen.blit(text3, (100, 350))
+        screen.blit(text4, (150, 380))
+
+        clicker = pygame.mouse.get_pos()
+
+        back_x = 620
+        back_y = 550
+        screen.blit(back_option, (back_x, back_y))
+        if back_x <= clicker[0] <= back_x + 210 and back_y <= clicker[1] <= back_y + 40:
+            screen.blit(back_hover, (back_x, back_y))
 
         pygame.display.update()
-
 def board_gen_gui(screen):
     for c in range(cols):
         for r in range(rows):
