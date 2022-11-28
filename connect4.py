@@ -2,6 +2,9 @@ import numpy as np
 import sys
 import math
 import random
+
+import pygame
+
 from Button import *
 from pygame import mixer
 from colour import Color
@@ -21,7 +24,6 @@ def validateColors(colortxt):
 
 def create_board():
     """ It creates a board of zeros with the dimensions of rows and cols
-
     :return: A 2D array of zeros.
     """
     board = np.zeros((rows, cols))
@@ -30,7 +32,6 @@ def create_board():
 
 def board_gen_gui(screen, color, board, player_colors):  ############ added new parameter here
     """ It draws the board and the pieces on the board
-
     :param screen: the screen object that we created in the previous step
     :param color: the background color of the board
     :param board: the board that we're going to be drawing
@@ -64,7 +65,6 @@ def board_gen_gui(screen, color, board, player_colors):  ############ added new 
 def drop_piece(board, row, col, piece):
     """ The function `drop_piece` takes in a board, a row, a column, and a piece, and places the piece in the board at the
     given row and column
-
     :param board: the game board
     :param row: The row where the piece will be dropped
     :param col: The column where the piece is to be dropped
@@ -75,7 +75,6 @@ def drop_piece(board, row, col, piece):
 
 def is_valid_location(board, col):
     """ If the top row of the board is empty, then the column is a valid location to place a piece
-
     :param board: The game board
     :param col: The column to check if it's valid
     :return: The function is_valid_location is returning the value of the last row and the column that is passed in.
@@ -85,9 +84,7 @@ def is_valid_location(board, col):
 
 def get_next_open_row(board, col):
     """ **Given a column, find the next open row in that column.**
-
     Let's break it down
-
     :param board: The game board
     :param col: The column where the player wants to drop a piece
     :return: The row number of the first open space in the column.
@@ -99,7 +96,6 @@ def get_next_open_row(board, col):
 
 def winning_move(board, piece):
     """ It checks if there are four pieces in a row, either horizontally, vertically, or diagonally
-
     :param board: The game board
     :param piece: The piece that we are checking for a win
     :return: True or False
@@ -300,7 +296,6 @@ def minmax(board, depth, alpha, beta, maxplayer):
     """ A function that takes in a board, depth, alpha, beta, and maxplayer. It then creates a list of possible moves and then
     chooses a random column from that list. It then loops through the list of possible moves and creates a copy of the
     board.
-
     :param board: the board we're working with
     :param depth: the depth of the search tree
     :param alpha: the best value that the maximizing player currently can guarantee at that level or above
@@ -355,7 +350,6 @@ def minmax(board, depth, alpha, beta, maxplayer):
 
 def get_value_locations(board):
     """ It returns a list of all the valid locations on the board
-
     :param board: The current board state
     :return: The column number of the first empty space in the board.
     """
@@ -366,41 +360,11 @@ def get_value_locations(board):
     return valid_locations
 
 
-'''def computermove(board):
+def easymode(board,playername):
     """ The computer randomly chooses a column to drop a piece in. If the column is full, it chooses another column
-
     :param board: The game board
     :return: The game_over variable is being returned.
-    """
-    # posx = event.pos[0]
-    # col = int(math.floor(posx / len_piece))
-    pygame.time.wait(800)
-    compcol = random.randint(0, 6)
-    if is_valid_location(board, compcol):
-        row = get_next_open_row(board, compcol)
-        pygame.mixer.Sound.play(chip_sound)
-        drop_piece(board, row, compcol, 2)
-
-        if winning_move(board, 2):
-            label = heading_font.render(PLAYER_1 + " wins!!", True, YELLOW)
-            screen.blit(label, (40, 10))
-            game_over = True
-            return game_over
-'''
-
-
-def single():
-    """ It's a function that allows the user to play against the computer """
-    while True:
-        PLAYER_1 = get_player_name()
-
-        #####################3 GET COLOR FOR PLAYER 1
-        PLAYER_1_COLOR = get_player_color()
-
-        ###################3 this makes sure user enters valid Color
-        while PLAYER_1_COLOR.lower() == "yellow" or validateColors(PLAYER_1_COLOR) is False:
-            PLAYER_1_COLOR = get_player_color()
-
+    ""
         COMPUTER_NAME = "Computer"
         COMPUTER_COLOR = YELLOW
         screen.fill(LIGHT_BLUE)
@@ -418,12 +382,16 @@ def single():
         game_over = False
         exit_game = False
         turn = 0
-        winner = PLAYER_1
+        winner = playername
 
         while not game_over:
             if turn == 0:
-                whose_turn = heading_font.render(PLAYER_1 + "'s Turn", True, player_colors[0])
-                head_width, head_height = heading_font.size(PLAYER_1 + "'s Turn")
+                whose_turn = heading_font.render(playername + "'s Turn", True, RED)
+                head_width, head_height = heading_font.size(playername + "'s Turn")
+            else:
+                whose_turn = heading_font.render(COMPUTER_NAME + "'s Turn", True, YELLOW)
+                head_width, head_height = heading_font.size(COMPUTER_NAME + "'s Turn")
+
 
             heading_y = (strip_h - head_height) / 2
             screen.blit(whose_turn, (strip_w, heading_y))
@@ -452,35 +420,35 @@ def single():
                             drop_piece(board, row, col, 1)
 
                             if winning_move(board, 1):
-                                winner = PLAYER_1
-                                game_over = True
+                                label = heading_font.render(playername + " wins!!", True, RED)
+                                screen.blit(label, (40, 10))
+                                winner = playername
 
-                        # Ask for Player 2 Input
-                        # Computer is yellow
+                                game_over = True
+                        else:
+                            pygame.mixer.Sound.play(error)
+                            turn -= 1
 
                         board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
 
                         turn += 1
                         turn = turn % 2
 
-            if turn == 1:
-                # posx = event.pos[0]
-                # gameresult = computermove(board)
-                pygame.time.wait(500)
-                col, minmaxscore = minmax(board, 5, -math.inf, math.inf, True)
-  
+            if turn == 1 and not game_over:
+                pygame.time.wait(900)
+                col = random.randint(0, 6)
                 if is_valid_location(board, col):
                     row = get_next_open_row(board, col)
                     pygame.mixer.Sound.play(chip_sound)
                     drop_piece(board, row, col, COMPUTER_PIECE)
 
                     if winning_move(board, COMPUTER_PIECE):
-                        label = heading_font.render(PLAYER_1 + " wins!!", True, YELLOW)
+                        label = heading_font.render(COMPUTER_NAME + " wins!!", True, YELLOW)
                         screen.blit(label, (40, 10))
                         winner = COMPUTER_NAME
                         game_over = True
 
-                    board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
+                    board_gen_gui(screen, LIGHT_BLUE, board)
 
                     turn += 1
                     turn = turn % 2
@@ -493,11 +461,154 @@ def single():
             while not exit_game:
                 display_winner(winner)
                 check_restart("single")
+def hardmode(board,playername):
+    while True:
+        COMPUTER_NAME = "Computer"
+        screen.fill(LIGHT_BLUE)
+
+        board_gen_gui(screen, LIGHT_BLUE, board)
+
+        strip_w = width - (14 * RADIUS)
+        strip_h = height - (15 * RADIUS)
+        strip = pygame.Rect(0, 0, strip_w, strip_h)
+
+        len_piece = strip_w / cols
+
+        game_over = False
+        exit_game = False
+        turn = 0
+        winner = playername
+
+        while not game_over:
+            if turn == 0:
+                whose_turn = heading_font.render(playername + "'s Turn", True, RED)
+                head_width, head_height = heading_font.size(playername + "'s Turn")
+            else:
+                whose_turn = heading_font.render(COMPUTER_NAME + "'s Turn", True, YELLOW)
+                head_width, head_height = heading_font.size(COMPUTER_NAME + "'s Turn")
+
+            heading_y = (strip_h - head_height) / 2
+            screen.blit(whose_turn, (strip_w, heading_y))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+                if event.type == pygame.MOUSEMOTION:
+                    pygame.draw.rect(screen, LIGHT_BLUE, strip)
+                    posx = event.pos[0]
+                    if posx < strip_w - RADIUS:
+                        if turn == 0:
+                            pygame.draw.circle(screen, RED, (posx, int(height / 10)), RADIUS)
+                        # else:
+                        # pygame.draw.circle(screen, YELLOW, (posx, int(height / 10)), RADIUS)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # print(event.pos)
+                    if turn == 0:
+                        posx = event.pos[0]
+                        col = int(math.floor(posx / len_piece))
+                        if is_valid_location(board, col):
+                            row = get_next_open_row(board, col)
+                            pygame.mixer.Sound.play(chip_sound)
+                            drop_piece(board, row, col, 1)
+
+                            if winning_move(board, 1):
+                                label = heading_font.render(playername + " wins!!", True, RED)
+                                screen.blit(label, (40, 10))
+                                winner = playername
+                                game_over = True
+
+                        # Ask for Player 2 Input
+                        # Computer is yellow
+
+                        board_gen_gui(screen, LIGHT_BLUE, board)
+
+                        turn += 1
+                        turn = turn % 2
+
+            if turn == 1 and not game_over:
+            
+                pygame.time.wait(500)
+                col, minmaxscore = minmax(board, 5, -math.inf, math.inf, True)
+  
+                if is_valid_location(board, col):
+                    row = get_next_open_row(board, col)
+                    drop_piece(board, row, col, COMPUTER_PIECE)
+
+                    if winning_move(board, COMPUTER_PIECE):
+                        label = heading_font.render(COMPUTER_NAME + " wins!!", True, YELLOW)
+                        screen.blit(label, (40, 10))
+                        winner = COMPUTER_NAME
+                        game_over = True
+                else:
+                    turn -= 1
+
+                board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
+
+                turn += 1
+                turn = turn % 2
+
+            pygame.display.update()
+
+            # end the game
+
+        if game_over:
+            while not exit_game:
+                display_winner(winner)
+                check_restart("single")
+
+def pickdifficulty():
+    choosedifficulty = font.render('Pick a mode: ', True, WHITE)
+    easytext = font.render('Easy', True, WHITE)
+    hardtext = font.render('Hard', True, WHITE)
+
+    while True:
+        screen.fill(LIGHT_BLUE)
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if easy_x <= mouse[0] <= easy_x + easy_width and easy_y <= mouse[1] <= easy_y + easy_height:
+                    return 1
+                elif hard_x <= mouse[0] <= hard_x + hard_width and hard_y <= mouse[1] <= hard_y + hard_height:
+                    return 2
+
+        easy_width, easy_height = font.size("easy")
+        easy_x = 105
+        easy_y = 150
+
+        hard_width, hard_height = font.size("hard")
+        hard_x = 200
+        hard_y = 150
+
+        if easy_x <= mouse[0] <= easy_x + easy_width and easy_y <= mouse[1] <= easy_y + easy_height:
+            easytext = font.render("Easy", True, DARK_WHITE)
+        elif hard_x <= mouse[0] <= hard_x + hard_width and hard_y <= mouse[1] <= hard_y + hard_height:
+            hardtext = font.render("Hard", True, DARK_WHITE)
+
+        screen.blit(choosedifficulty, (100,50))
+        screen.blit(easytext,(easy_x, easy_y))
+        screen.blit(hardtext,(hard_x, hard_y))
+        pygame.display.update()
+
+def single():
+    """ It's a function that allows the user to play against the computer """
+    while True:
+        singlename = get_player_name()
+        screen.fill(LIGHT_BLUE)
+
+        board = create_board()
+
+        if pickdifficulty() == 1:
+            easymode(board,singlename)
+        else:
+            hardmode(board,singlename)
 
 
 def display_winner(winner):
     """ It displays the winner's name on the screen for 3 seconds
-
     :param winner: The winner of the game
     """
 
@@ -536,7 +647,7 @@ def multi():
 
         player_colors = [PLAYER_1_COLOR, PLAYER_2_COLOR]
         board = create_board()
-        board_gen_gui(screen, BLUE, board, player_colors)
+        board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
 
         strip_w = width - (14 * RADIUS)
         strip_h = height - (15 * RADIUS)
@@ -551,10 +662,10 @@ def multi():
 
         while not game_over:
             if turn == 0:
-                whose_turn = heading_font.render(PLAYER_1 + "'s Turn", True, PLAYER_1_COLOR)
+                whose_turn = heading_font.render(PLAYER_1 + "'s Turn", True, WHITE)
                 head_width, head_height = heading_font.size(PLAYER_1 + "'s Turn")
             else:
-                whose_turn = heading_font.render(PLAYER_2 + "'s Turn", True, PLAYER_2_COLOR)
+                whose_turn = heading_font.render(PLAYER_2 + "'s Turn", True, WHITE)
                 head_width, head_height = heading_font.size(PLAYER_2 + "'s Turn")
 
             heading_y = (strip_h - head_height) / 2
@@ -565,7 +676,7 @@ def multi():
                     sys.exit()
 
                 if event.type == pygame.MOUSEMOTION:
-                    pygame.draw.rect(screen, BLUE, strip)
+                    pygame.draw.rect(screen, LIGHT_BLUE, strip)
                     posx = event.pos[0]
                     if posx < strip_w - RADIUS:
                         if turn == 0:
@@ -585,6 +696,9 @@ def multi():
                             if winning_move(board, 1):
                                 display_winner(winner)
                                 game_over = True
+                        else:
+                            pygame.mixer.Sound.play(error)
+                            turn -= 1
 
                     # Ask for Player 2 Input
                     else:
@@ -598,8 +712,11 @@ def multi():
                             if winning_move(board, 2):
                                 winner = PLAYER_2
                                 game_over = True
+                        else:
+                            pygame.mixer.Sound.play(error)
+                            turn -= 1
 
-                    board_gen_gui(screen, BLUE, board, player_colors)
+                    board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
 
                     turn += 1
                     turn = turn % 2
@@ -677,7 +794,6 @@ def rules():
 
 def get_player_name():
     """ It creates a text box and waits for the user to enter text
-
     :return: The text that the user inputs.
     """
     text_box = pygame.Rect(100, 100, 140, 32)
@@ -732,7 +848,6 @@ def get_player_name():
 ################################################ NEW CODE ADDED HERE TO GET COLOR FOR SINGLE PLAYER ###############################
 def get_player_color():
     """ It creates a text box and waits for the user to enter text
-
     :return: The text that the user inputs.
     """
     text_box = pygame.Rect(100, 100, 140, 32)
@@ -788,7 +903,6 @@ def get_player_color():
 
 def create_text_boxes():
     """ It creates two text boxes and returns them
-
     :return: The player_one_text_box and player_two_text_box are being returned.
     """
     screen.fill(LIGHT_BLUE)
@@ -819,7 +933,6 @@ def create_text_boxes():
 #######################             changes made here for adding color boxes                      ################################3
 def create_color_boxes():
     """ It creates two text boxes and returns them
-
     :return: The player_one_text_box and player_two_text_box are being returned.
     """
     screen.fill(LIGHT_BLUE)
@@ -849,7 +962,6 @@ def create_color_boxes():
 
 def get_player_colors(player_one_text_box, player_two_text_box, message_1, message_2):
     """ It takes in two text boxes and returns the names of the players
-
     :param player_one_text_box: The rectangle that the player one text will be displayed in
     :param player_two_text_box: The rectangle that the player two text will be displayed in
     :return: the player names.
@@ -914,7 +1026,6 @@ def get_player_colors(player_one_text_box, player_two_text_box, message_1, messa
 
 def get_player_names(player_one_text_box, player_two_text_box):
     """ It takes in two text boxes and returns the names of the players
-
     :param player_one_text_box: The rectangle that the player one text will be displayed in
     :param player_two_text_box: The rectangle that the player two text will be displayed in
     :return: the player names.
@@ -974,7 +1085,6 @@ def get_player_names(player_one_text_box, player_two_text_box):
 
 def check_restart(game_type):
     """ It's a function that asks the user if they want to continue or exit the game
-
     :param game_type: This is the type of game that was being played
     """
     decided = False
@@ -1051,6 +1161,7 @@ if __name__ == "__main__":
 
     # sound for chips
     chip_sound = pygame.mixer.Sound('gameSound.wav')
+    error = pygame.mixer.Sound('buzzer.wav')
 
     # sound for enter game
     chip_sound1_boolean = True
