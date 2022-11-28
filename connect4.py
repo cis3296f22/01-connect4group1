@@ -364,109 +364,128 @@ def easymode(board,playername):
     """ The computer randomly chooses a column to drop a piece in. If the column is full, it chooses another column
     :param board: The game board
     :return: The game_over variable is being returned.
-    ""
-        COMPUTER_NAME = "Computer"
-        COMPUTER_COLOR = YELLOW
-        screen.fill(LIGHT_BLUE)
+    """
+    COMPUTER_NAME = "Computer"
+    screen.fill(LIGHT_BLUE)
 
-        player_colors = [PLAYER_1_COLOR, COMPUTER_COLOR]
-        board = create_board()
-        board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
+    SINGLE_COLOR = get_player_color()
+    COMPUTER_COLOR = 'yellow'
 
-        strip_w = width - (14 * RADIUS)
-        strip_h = height - (15 * RADIUS)
-        strip = pygame.Rect(0, 0, strip_w, strip_h)
+    while validateColors(SINGLE_COLOR) is False:
+        SINGLE_COLOR = get_player_color()
 
-        len_piece = strip_w / cols
+    chipcolors = [SINGLE_COLOR, COMPUTER_COLOR]
 
-        game_over = False
-        exit_game = False
-        turn = 0
-        winner = playername
+    board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
-        while not game_over:
-            if turn == 0:
-                whose_turn = heading_font.render(playername + "'s Turn", True, RED)
-                head_width, head_height = heading_font.size(playername + "'s Turn")
-            else:
-                whose_turn = heading_font.render(COMPUTER_NAME + "'s Turn", True, YELLOW)
-                head_width, head_height = heading_font.size(COMPUTER_NAME + "'s Turn")
+    strip_w = width - (14 * RADIUS)
+    strip_h = height - (15 * RADIUS)
+    strip = pygame.Rect(0, 0, strip_w, strip_h)
+
+    len_piece = strip_w / cols
+
+    game_over = False
+    exit_game = False
+    turn = 0
+    winner = playername
+
+    while not game_over:
+        if turn == 0:
+            whose_turn = heading_font.render(playername + "'s Turn", True, SINGLE_COLOR)
+            head_width, head_height = heading_font.size(playername + "'s Turn")
+        else:
+            whose_turn = heading_font.render(COMPUTER_NAME + "'s Turn", True, YELLOW)
+            head_width, head_height = heading_font.size(COMPUTER_NAME + "'s Turn")
 
 
-            heading_y = (strip_h - head_height) / 2
-            screen.blit(whose_turn, (strip_w, heading_y))
+        heading_y = (strip_h - head_height) / 2
+        screen.blit(whose_turn, (strip_w, heading_y))
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-                if event.type == pygame.MOUSEMOTION:
-                    pygame.draw.rect(screen, LIGHT_BLUE, strip)
-                    posx = event.pos[0]
-                    if posx < strip_w - RADIUS:
-                        if turn == 0:
-                            pygame.draw.circle(screen, player_colors[0], (posx, int(height / 10)), RADIUS)
-                        # else:
-                        # pygame.draw.circle(screen, YELLOW, (posx, int(height / 10)), RADIUS)
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # print(event.pos)
+            if event.type == pygame.MOUSEMOTION:
+                pygame.draw.rect(screen, LIGHT_BLUE, strip)
+                posx = event.pos[0]
+                if posx < strip_w - RADIUS:
                     if turn == 0:
-                        posx = event.pos[0]
-                        col = int(math.floor(posx / len_piece))
-                        if is_valid_location(board, col):
-                            row = get_next_open_row(board, col)
-                            pygame.mixer.Sound.play(chip_sound)
-                            drop_piece(board, row, col, 1)
+                        pygame.draw.circle(screen, SINGLE_COLOR, (posx, int(height / 10)), RADIUS)
+                    # else:
+                    # pygame.draw.circle(screen, YELLOW, (posx, int(height / 10)), RADIUS)
 
-                            if winning_move(board, 1):
-                                label = heading_font.render(playername + " wins!!", True, RED)
-                                screen.blit(label, (40, 10))
-                                winner = playername
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # print(event.pos)
+                if turn == 0:
+                    posx = event.pos[0]
+                    col = int(math.floor(posx / len_piece))
+                    if is_valid_location(board, col):
+                        row = get_next_open_row(board, col)
+                        pygame.mixer.Sound.play(chip_sound)
+                        drop_piece(board, row, col, 1)
 
-                                game_over = True
-                        else:
-                            pygame.mixer.Sound.play(error)
-                            turn -= 1
+                        if winning_move(board, 1):
+                            label = heading_font.render(playername + " wins!!", True, SINGLE_COLOR)
+                            screen.blit(label, (40, 10))
+                            winner = playername
 
-                        board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
+                            game_over = True
+                    else:
+                        pygame.mixer.Sound.play(error)
+                        turn -= 1
 
-                        turn += 1
-                        turn = turn % 2
-
-            if turn == 1 and not game_over:
-                pygame.time.wait(900)
-                col = random.randint(0, 6)
-                if is_valid_location(board, col):
-                    row = get_next_open_row(board, col)
-                    pygame.mixer.Sound.play(chip_sound)
-                    drop_piece(board, row, col, COMPUTER_PIECE)
-
-                    if winning_move(board, COMPUTER_PIECE):
-                        label = heading_font.render(COMPUTER_NAME + " wins!!", True, YELLOW)
-                        screen.blit(label, (40, 10))
-                        winner = COMPUTER_NAME
-                        game_over = True
-
-                    board_gen_gui(screen, LIGHT_BLUE, board)
+                    board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
                     turn += 1
                     turn = turn % 2
 
-            pygame.display.update()
+        if turn == 1 and not game_over:
+            pygame.time.wait(900)
+            col = random.randint(0, 6)
+            if is_valid_location(board, col):
+                row = get_next_open_row(board, col)
+                pygame.mixer.Sound.play(chip_sound)
+                drop_piece(board, row, col, COMPUTER_PIECE)
 
-            # end the game
+                if winning_move(board, COMPUTER_PIECE):
+                    label = heading_font.render(COMPUTER_NAME + " wins!!", True, YELLOW)
+                    screen.blit(label, (40, 10))
+                    winner = COMPUTER_NAME
+                    game_over = True
 
-        if game_over:
-            while not exit_game:
-                display_winner(winner)
-                check_restart("single")
-def hardmode(board,playername):
+                board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
+
+                turn += 1
+                turn = turn % 2
+
+        pygame.display.update()
+
+        # end the game
+
+    if game_over:
+        while not exit_game:
+            display_winner(winner)
+            check_restart("single")
+
+def hardmode(board,playername, computerwins, playerwins):
     while True:
+        computer_text = font.render("Computer wins", True, WHITE)
+        player_text = font.render("Player wins", True, WHITE)
+        num_computer_wins = font.render(str(computerwins), True, WHITE)
+        num_player_wins = font.render(str(playerwins), True, WHITE)
+
         COMPUTER_NAME = "Computer"
         screen.fill(LIGHT_BLUE)
 
-        board_gen_gui(screen, LIGHT_BLUE, board)
+        SINGLE_COLOR = get_player_color()
+        COMPUTER_COLOR = 'yellow'
+
+        while validateColors(SINGLE_COLOR) is False:
+            SINGLE_COLOR = get_player_color()
+
+        chipcolors = [SINGLE_COLOR, COMPUTER_COLOR]
+
+        board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
         strip_w = width - (14 * RADIUS)
         strip_h = height - (15 * RADIUS)
@@ -480,8 +499,12 @@ def hardmode(board,playername):
         winner = playername
 
         while not game_over:
+            screen.blit(computer_text, (800, 200))
+            screen.blit(num_computer_wins, (875, 250))
+            screen.blit(player_text, (1000, 200))
+            screen.blit(num_player_wins, (1055, 250))
             if turn == 0:
-                whose_turn = heading_font.render(playername + "'s Turn", True, RED)
+                whose_turn = heading_font.render(playername + "'s Turn", True, SINGLE_COLOR)
                 head_width, head_height = heading_font.size(playername + "'s Turn")
             else:
                 whose_turn = heading_font.render(COMPUTER_NAME + "'s Turn", True, YELLOW)
@@ -499,7 +522,7 @@ def hardmode(board,playername):
                     posx = event.pos[0]
                     if posx < strip_w - RADIUS:
                         if turn == 0:
-                            pygame.draw.circle(screen, RED, (posx, int(height / 10)), RADIUS)
+                            pygame.draw.circle(screen, SINGLE_COLOR, (posx, int(height / 10)), RADIUS)
                         # else:
                         # pygame.draw.circle(screen, YELLOW, (posx, int(height / 10)), RADIUS)
 
@@ -514,15 +537,17 @@ def hardmode(board,playername):
                             drop_piece(board, row, col, 1)
 
                             if winning_move(board, 1):
-                                label = heading_font.render(playername + " wins!!", True, RED)
+                                label = heading_font.render(playername + " wins!!", True, SINGLE_COLOR)
                                 screen.blit(label, (40, 10))
                                 winner = playername
+                                global PLAYER_WINS
+                                PLAYER_WINS += 1
                                 game_over = True
 
                         # Ask for Player 2 Input
                         # Computer is yellow
 
-                        board_gen_gui(screen, LIGHT_BLUE, board)
+                        board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
                         turn += 1
                         turn = turn % 2
@@ -534,17 +559,20 @@ def hardmode(board,playername):
 
                 if is_valid_location(board, col):
                     row = get_next_open_row(board, col)
+                    pygame.mixer.Sound.play(chip_sound)
                     drop_piece(board, row, col, COMPUTER_PIECE)
 
                     if winning_move(board, COMPUTER_PIECE):
                         label = heading_font.render(COMPUTER_NAME + " wins!!", True, YELLOW)
                         screen.blit(label, (40, 10))
                         winner = COMPUTER_NAME
+                        global COMPUTER_WINS
+                        COMPUTER_WINS += 1
                         game_over = True
                 else:
                     turn -= 1
 
-                board_gen_gui(screen, LIGHT_BLUE, board, player_colors)
+                board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
                 turn += 1
                 turn = turn % 2
@@ -557,6 +585,7 @@ def hardmode(board,playername):
             while not exit_game:
                 display_winner(winner)
                 check_restart("single")
+
 
 def pickdifficulty():
     choosedifficulty = font.render('Pick a mode: ', True, WHITE)
@@ -585,7 +614,7 @@ def pickdifficulty():
 
         if easy_x <= mouse[0] <= easy_x + easy_width and easy_y <= mouse[1] <= easy_y + easy_height:
             easytext = font.render("Easy", True, DARK_WHITE)
-        elif hard_x <= mouse[0] <= hard_x + hard_width and hard_y <= mouse[1] <= hard_y + hard_height:
+        if hard_x <= mouse[0] <= hard_x + hard_width and hard_y <= mouse[1] <= hard_y + hard_height:
             hardtext = font.render("Hard", True, DARK_WHITE)
 
         screen.blit(choosedifficulty, (100,50))
@@ -604,7 +633,7 @@ def single():
         if pickdifficulty() == 1:
             easymode(board,singlename)
         else:
-            hardmode(board,singlename)
+            hardmode(board,singlename, COMPUTER_WINS, PLAYER_WINS)
 
 
 def display_winner(winner):
@@ -662,10 +691,10 @@ def multi():
 
         while not game_over:
             if turn == 0:
-                whose_turn = heading_font.render(PLAYER_1 + "'s Turn", True, WHITE)
+                whose_turn = heading_font.render(PLAYER_1 + "'s Turn", True, PLAYER_1_COLOR)
                 head_width, head_height = heading_font.size(PLAYER_1 + "'s Turn")
             else:
-                whose_turn = heading_font.render(PLAYER_2 + "'s Turn", True, WHITE)
+                whose_turn = heading_font.render(PLAYER_2 + "'s Turn", True, PLAYER_2_COLOR)
                 head_width, head_height = heading_font.size(PLAYER_2 + "'s Turn")
 
             heading_y = (strip_h - head_height) / 2
@@ -1195,6 +1224,9 @@ if __name__ == "__main__":
     SINGLE_PIECE = 1
     COMPUTER_PIECE = 2
 
+    PLAYER_WINS = 0
+    COMPUTER_WINS = 0
+
     WINDOW_LENGTH = 4
 
     # Screen
@@ -1217,6 +1249,7 @@ if __name__ == "__main__":
 
     rows = 6
     cols = 7
+
 
     font = pygame.font.SysFont('Calibri', 25, True, False)
 
