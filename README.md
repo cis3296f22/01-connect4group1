@@ -11,7 +11,7 @@ Connect 4 implemented in Python using Pygame.
 2. [ How to play](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#--how-to-play)      
 3. [ How to run](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#-how-to-run)
 4. [How to contribute](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#how-to-contribute)
-5. [Features](
+5. [Features](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#features)
 6. [License](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#license)
 
 
@@ -90,10 +90,15 @@ a.Using python IDE:
 
 # Features
 • Play with AI
+
 • Two Player can against each other
+
 • Players can put their name
+
 • Can choose different colors for chips
+
 • Can choose easy or difficult mode in singer player
+
 • Different sounds in the game 
 
 # License 
