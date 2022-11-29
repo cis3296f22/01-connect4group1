@@ -452,11 +452,13 @@ def easymode(board,playername):
                     screen.blit(label, (40, 10))
                     winner = COMPUTER_NAME
                     game_over = True
+            else:
+                turn -= 1
 
-                board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
+            board_gen_gui(screen, LIGHT_BLUE, board, chipcolors)
 
-                turn += 1
-                turn = turn % 2
+            turn += 1
+            turn = turn % 2
 
         pygame.display.update()
 
@@ -543,6 +545,9 @@ def hardmode(board,playername, computerwins, playerwins):
                                 global PLAYER_WINS
                                 PLAYER_WINS += 1
                                 game_over = True
+                        else:
+                            pygame.mixer.Sound.play(error)
+                            turn -= 1
 
                         # Ask for Player 2 Input
                         # Computer is yellow
