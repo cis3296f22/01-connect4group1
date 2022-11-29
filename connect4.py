@@ -371,7 +371,7 @@ def easymode(board,playername):
     SINGLE_COLOR = get_player_color()
     COMPUTER_COLOR = 'yellow'
 
-    while validateColors(SINGLE_COLOR) is False:
+    while validateColors(SINGLE_COLOR) is False or SINGLE_COLOR == COMPUTER_COLOR:
         SINGLE_COLOR = get_player_color()
 
     chipcolors = [SINGLE_COLOR, COMPUTER_COLOR]
@@ -482,7 +482,7 @@ def hardmode(board,playername, computerwins, playerwins):
         SINGLE_COLOR = get_player_color()
         COMPUTER_COLOR = 'yellow'
 
-        while validateColors(SINGLE_COLOR) is False:
+        while validateColors(SINGLE_COLOR) is False or SINGLE_COLOR == COMPUTER_COLOR:
             SINGLE_COLOR = get_player_color()
 
         chipcolors = [SINGLE_COLOR, COMPUTER_COLOR]
