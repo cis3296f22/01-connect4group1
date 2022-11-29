@@ -11,7 +11,8 @@ Connect 4 implemented in Python using Pygame.
 2. [ How to play](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#--how-to-play)      
 3. [ How to run](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#-how-to-run)
 4. [How to contribute](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#how-to-contribute)
-5. [License](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#license)
+5. [Features](
+6. [License](https://github.com/cis3296f22/01-connect4group1/blob/main/README.md#license)
 
 
 # Descripition 
@@ -87,27 +88,17 @@ a.Using python IDE:
 
 •Follow this project board to know the latest status of the project: https://trello.com/b/AbDVXGNK/connect-four-project-board
 
+# Features
+• Play with AI
+• Two Player can against each other
+• Players can put their name
+• Can choose different colors for chips
+• Can choose easy or difficult mode in singer player
+• Different sounds in the game 
+
 # License 
 MIT License
 
 Copyright (c) 2022 cis3296f22/connect4group1
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
