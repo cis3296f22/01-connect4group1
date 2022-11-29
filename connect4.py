@@ -594,10 +594,10 @@ def hardmode(board,playername, computerwins, playerwins):
 
 def pickdifficulty():
     choosedifficulty = font.render('Pick a mode: ', True, WHITE)
-    easytext = font.render('Easy', True, WHITE)
-    hardtext = font.render('Hard', True, WHITE)
 
     while True:
+        easytext = font.render('Easy', True, WHITE)
+        hardtext = font.render('Hard', True, WHITE)
         screen.fill(LIGHT_BLUE)
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -618,9 +618,9 @@ def pickdifficulty():
         hard_y = 150
 
         if easy_x <= mouse[0] <= easy_x + easy_width and easy_y <= mouse[1] <= easy_y + easy_height:
-            easytext = font.render("Easy", True, DARK_WHITE)
+            easytext = font.render('Easy', True, DARK_WHITE)
         if hard_x <= mouse[0] <= hard_x + hard_width and hard_y <= mouse[1] <= hard_y + hard_height:
-            hardtext = font.render("Hard", True, DARK_WHITE)
+            hardtext = font.render('Hard', True, DARK_WHITE)
 
         screen.blit(choosedifficulty, (100,50))
         screen.blit(easytext,(easy_x, easy_y))
@@ -832,9 +832,9 @@ def get_player_name():
     """
     text_box = pygame.Rect(100, 100, 140, 32)
     color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
+    color_active = WHITE
     color = color_inactive
-    prompt = font.render('Enter your name: or close the window to quit', True, WHITE)
+    prompt = font.render('Click the box below and type in your name. Click enter when done', True, WHITE)
 
     active = False
     text = ''
@@ -886,9 +886,9 @@ def get_player_color():
     """
     text_box = pygame.Rect(100, 100, 140, 32)
     color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
+    color_active = WHITE
     color = color_inactive
-    prompt = font.render('Enter your Color(except yellow): or close the window to quit', True, WHITE)
+    prompt = font.render('Click the box below and enter your color you want (NOT yellow)', True, WHITE)
 
     active = False
     text = ''
