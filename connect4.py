@@ -663,7 +663,7 @@ def multi():
     # this function is called when the user clicks on the multiplayer button on the main menu
 
     message_1 = "Player 1 type in your Color then press enter to enter player 2's Color"
-    message_2 = "You chose same Colours, Please Enter Diffrent Colours"
+    message_2 = "Please enter DIFFERENT and VALID colors"
 
     while True:
         player_one_text_box, player_two_text_box = create_text_boxes()
@@ -939,27 +939,9 @@ def create_text_boxes():
     """ It creates two text boxes and returns them
     :return: The player_one_text_box and player_two_text_box are being returned.
     """
-    screen.fill(LIGHT_BLUE)
-
-    # text box for player one
-    player_one = font.render("Player One: ", True, WHITE)
-    player_one_rect = player_one.get_rect()
-    player_one_rect.center = (width / 2.5, height / 2.5)
-    screen.blit(player_one, player_one_rect)
-
-    # text box for player two
-    player_two = font.render("Player Two: ", True, WHITE)
-    player_two_rect = player_two.get_rect()
-    player_two_rect.center = (width / 2.5, height / 2)
-    screen.blit(player_two, player_two_rect)
-
     # create text boxes
     player_one_text_box = pygame.Rect(width / 2, height / 2.5, 200, 50)
     player_two_text_box = pygame.Rect(width / 2, height / 2, 200, 50)
-
-    # draw text boxes
-    pygame.draw.rect(screen, WHITE, player_one_text_box, 2)
-    pygame.draw.rect(screen, WHITE, player_two_text_box, 2)
 
     return player_one_text_box, player_two_text_box
 
@@ -969,27 +951,9 @@ def create_color_boxes():
     """ It creates two text boxes and returns them
     :return: The player_one_text_box and player_two_text_box are being returned.
     """
-    screen.fill(LIGHT_BLUE)
-
-    # text box for player one
-    player_one = font.render("Color for Player One: ", True, WHITE)
-    player_one_rect = player_one.get_rect()
-    player_one_rect.center = (width / 2.5, height / 2.5)
-    screen.blit(player_one, player_one_rect)
-
-    # text box for player two
-    player_two = font.render("Color for Player Two: ", True, WHITE)
-    player_two_rect = player_two.get_rect()
-    player_two_rect.center = (width / 2.5, height / 2)
-    screen.blit(player_two, player_two_rect)
-
     # create text boxes
     player_one_text_box = pygame.Rect(width / 2, height / 2.5, 200, 50)
     player_two_text_box = pygame.Rect(width / 2, height / 2, 200, 50)
-
-    # draw text boxes
-    pygame.draw.rect(screen, WHITE, player_one_text_box, 2)
-    pygame.draw.rect(screen, WHITE, player_two_text_box, 2)
 
     return player_one_text_box, player_two_text_box
 
@@ -1000,14 +964,13 @@ def get_player_colors(player_one_text_box, player_two_text_box, message_1, messa
     :param player_two_text_box: The rectangle that the player two text will be displayed in
     :return: the player names.
     """
-    prompt = font.render(message_1, True, WHITE)
-    screen.blit(prompt, (100, 50))
-
-    prompt = font.render(message_2, True, WHITE)
-    screen.blit(prompt, (100, 100))
-
     player_one_name = ""
     player_two_name = ""
+
+    color_inactive = LIGHT_WHITE
+    color_active = WHITE
+    color1 = color_active
+    color2 = color_inactive
 
     player_one_name_entered = False
     player_two_name_entered = False
@@ -1021,6 +984,8 @@ def get_player_colors(player_one_text_box, player_two_text_box, message_1, messa
                 if event.key == pygame.K_RETURN:
                     if not player_one_name_entered:
                         player_one_name_entered = True
+                        color1 = color_inactive
+                        color2 = color_active
                     elif not player_two_name_entered:
                         player_two_name_entered = True
                 elif event.key == pygame.K_BACKSPACE:
@@ -1034,20 +999,37 @@ def get_player_colors(player_one_text_box, player_two_text_box, message_1, messa
                     elif not player_two_name_entered:
                         player_two_name += event.unicode
 
+        screen.fill(LIGHT_BLUE)
+        prompt = font.render(message_1, True, WHITE)
+        screen.blit(prompt, (100, 50))
+
+        prompt = font.render(message_2, True, WHITE)
+        screen.blit(prompt, (100, 100))
+
+        # text box for player one
+        player_one = font.render("Player One Color: ", True, WHITE)
+        player_one_rect = player_one.get_rect()
+        player_one_rect.center = (width / 2.5, height / 2.5)
+        screen.blit(player_one, player_one_rect)
+
+        # text box for player two
+        player_two = font.render("Player Two Color: ", True, WHITE)
+        player_two_rect = player_two.get_rect()
+        player_two_rect.center = (width / 2.5, height / 2)
+        screen.blit(player_two, player_two_rect)
+
         # draw text boxes
-        pygame.draw.rect(screen, WHITE, player_one_text_box, 2)
-        pygame.draw.rect(screen, WHITE, player_two_text_box, 2)
+        pygame.draw.rect(screen, color1, player_one_text_box, 2)
+        pygame.draw.rect(screen, color2, player_two_text_box, 2)
 
         # draw text
-        player_one_text = font.render(player_one_name, True, WHITE)
-        player_two_text = font.render(player_two_name, True, WHITE)
+        player_one_text = font.render(player_one_name, True, color1)
+        player_two_text = font.render(player_two_name, True, color2)
 
         screen.blit(player_one_text, player_one_text_box)
         screen.blit(player_two_text, player_two_text_box)
 
-        color = WHITE
-
-        prompt = font.render("Close the window to quit and enter to continue", True, color)
+        prompt = font.render("Close the window to quit and enter to continue", True, WHITE)
 
         screen.blit(prompt, (width / 2, height / 1.5))
 
@@ -1064,11 +1046,13 @@ def get_player_names(player_one_text_box, player_two_text_box):
     :param player_two_text_box: The rectangle that the player two text will be displayed in
     :return: the player names.
     """
-    prompt = font.render("Player 1 type in your name then press enter to enter player 2's name", True, WHITE)
-    screen.blit(prompt, (100, 50))
-
     player_one_name = ""
     player_two_name = ""
+
+    color_inactive = LIGHT_WHITE
+    color_active = WHITE
+    color1 = color_active
+    color2 = color_inactive
 
     player_one_name_entered = False
     player_two_name_entered = False
@@ -1082,6 +1066,8 @@ def get_player_names(player_one_text_box, player_two_text_box):
                 if event.key == pygame.K_RETURN:
                     if not player_one_name_entered:
                         player_one_name_entered = True
+                        color1 = color_inactive
+                        color2 = color_active
                     elif not player_two_name_entered:
                         player_two_name_entered = True
                 elif event.key == pygame.K_BACKSPACE:
@@ -1095,23 +1081,37 @@ def get_player_names(player_one_text_box, player_two_text_box):
                     elif not player_two_name_entered:
                         player_two_name += event.unicode
 
+        screen.fill(LIGHT_BLUE)
+        prompt = font.render("Player 1 type in your name then press enter to enter player 2's name", True, WHITE)
+        screen.blit(prompt, (100, 50))
+
+        # text box for player one
+        player_one = font.render("Player One: ", True, WHITE)
+        player_one_rect = player_one.get_rect()
+        player_one_rect.center = (width / 2.5, height / 2.5)
+        screen.blit(player_one, player_one_rect)
+
+        # text box for player two
+        player_two = font.render("Player Two: ", True, WHITE)
+        player_two_rect = player_two.get_rect()
+        player_two_rect.center = (width / 2.5, height / 2)
+        screen.blit(player_two, player_two_rect)
+
         # draw text boxes
-        pygame.draw.rect(screen, WHITE, player_one_text_box, 2)
-        pygame.draw.rect(screen, WHITE, player_two_text_box, 2)
+        pygame.draw.rect(screen, color1, player_one_text_box, 2)
+        pygame.draw.rect(screen, color2, player_two_text_box, 2)
 
         # draw text
-        player_one_text = font.render(player_one_name, True, WHITE)
-        player_two_text = font.render(player_two_name, True, WHITE)
+        player_one_text = font.render(player_one_name, True, color1)
+        player_two_text = font.render(player_two_name, True, color2)
 
         screen.blit(player_one_text, player_one_text_box)
         screen.blit(player_two_text, player_two_text_box)
 
-        color = WHITE
-
-        prompt = font.render("Close the window to quit and enter to continue", True, color)
+        prompt = font.render("Close the window to quit and enter to continue", True, WHITE)
 
         screen.blit(prompt, (width / 2, height / 1.5))
-
+        
         pygame.display.update()
 
     return player_one_name, player_two_name
