@@ -97,7 +97,7 @@ a.Using python IDE:
 
 • Can choose different colors for chips
 
-• Can choose easy or difficult mode in singer player
+• Can choose easy or difficult mode in single player
 
 • Different sounds in the game 
 
