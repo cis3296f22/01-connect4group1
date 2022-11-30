@@ -35,6 +35,8 @@ On the main menu,select the mode(one player or multi player)in which you want to
 # 💻 How to run
 
 
+• First you want to either clone this repository into your local machine OR download the files using the 'Actual Final Release'
+
 • Download the Python (https://www.python.org/downloads/) or download PyCharm (https://www.jetbrains.com/pycharm/download/#section=mac)
 
 There is a little a bit different install packages between Python IDE and Pycham:
